@@ -1,0 +1,127 @@
+version: "2.2"
+
+volumes:
+  metadata_data: {}
+  middle_var: {}
+  historical_var: {}
+  broker_var: {}
+  coordinator_var: {}
+  router_var: {}
+  druid_shared: {}
+
+
+services:
+  zookeeper:
+    networks:
+      - cc_flink_druid_default
+    image: confluentinc/cp-zookeeper:7.2.1
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  postgres:
+    networks:
+      - cc_flink_druid_default
+    container_name: postgres
+    image: postgres:latest
+    volumes:
+      - metadata_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=FoolishPassword
+      - POSTGRES_USER=druid
+      - POSTGRES_DB=druid
+
+  coordinator:
+    networks:
+      - cc_flink_druid_default
+    image: apache/druid:25.0.0
+    container_name: coordinator
+    volumes:
+      - druid_shared:/opt/shared
+      - coordinator_var:/opt/druid/var
+    depends_on: 
+      - postgres
+    ports:
+      - "28081:8081"
+    command:
+      - coordinator
+    env_file:
+      - environment
+
+  broker:
+    networks:
+      - cc_flink_druid_default
+    image: apache/druid:25.0.0
+    container_name: broker
+    volumes:
+      - broker_var:/opt/druid/var
+    depends_on: 
+      - postgres
+      - coordinator
+    ports:
+      - "18082:8082"
+    command:
+      - broker
+    env_file:
+      - environment
+
+  historical:
+    networks:
+      - cc_flink_druid_default
+    image: apache/druid:25.0.0
+    container_name: historical
+    volumes:
+      - druid_shared:/opt/shared
+      - historical_var:/opt/druid/var
+    depends_on: 
+      - postgres
+      - coordinator
+    ports:
+      - "18083:8083"
+    command:
+      - historical
+    env_file:
+      - environment
+
+  middlemanager:
+    networks:
+      - cc_flink_druid_default
+    image: apache/druid:25.0.0
+    container_name: middlemanager
+    volumes:
+      - druid_shared:/opt/shared
+      - middle_var:/opt/druid/var
+    depends_on: 
+      - postgres
+      - coordinator
+    ports:
+      - "8091:8091"
+      - "8100-8105:8100-8105"
+    command:
+      - middleManager
+    env_file:
+      - environment
+
+  router:
+    networks:
+      - cc_flink_druid_default
+    image: apache/druid:25.0.0
+    container_name: router
+    volumes:
+      - router_var:/opt/druid/var
+    depends_on:
+      - postgres
+      - coordinator
+    ports:
+      - "8888:8888"
+    command:
+      - router
+    env_file:
+      - environment
+
+networks:
+  cc_flink_druid_default:
+    external: true

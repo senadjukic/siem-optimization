@@ -1,0 +1,123 @@
+{
+  "type": "kafka",
+  "spec": {
+    "dataSchema": {
+      "dataSource": "SECURITY_LOGS_SYSLOG",
+      "timestampSpec": null,
+      "dimensionsSpec": null,
+      "metricsSpec": [
+        {
+          "type": "count",
+          "name": "count"
+        }
+      ],
+      "granularitySpec": {
+        "type": "uniform",
+        "segmentGranularity": "DAY",
+        "queryGranularity": {
+          "type": "none"
+        },
+        "rollup": false,
+        "intervals": []
+      },
+      "transformSpec": {
+        "filter": null,
+        "transforms": []
+      },
+      "parser": {
+        "type": "avro_stream",
+        "avroBytesDecoder": {
+          "type": "schema_registry",
+          "url": "{{SCHEMA_REGISTRY_URL}}",
+          "config": {
+            "basic.auth.credentials.source": "USER_INFO",
+            "basic.auth.user.info": "{{SCHEMA_REGISTRY_API_KEY}}:{{SCHEMA_REGISTRY_API_SECRET}}"
+          }
+        },
+        "parseSpec": {
+          "format": "avro",
+          "timestampSpec": {
+            "column": "event_time",
+            "format": "millis"
+          },
+          "dimensionsSpec": {
+            "dimensions": [
+              {
+                "name": "priority",
+                "type": "long"
+              },
+              {
+                "name": "timestamp",
+                "type": "string"
+              },
+              {
+                "name": "hostname",
+                "type": "string"
+              },
+              {
+                "name": "application",
+                "type": "string"
+              },
+              {
+                "name": "process_id",
+                "type": "string"
+              },
+              {
+                "name": "message",
+                "type": "string"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "ioConfig": {
+      "topic": "SECURITY_LOGS_SYSLOG",
+      "inputFormat": null,
+      "replicas": 1,
+      "taskCount": 1,
+      "taskDuration": "PT4H",
+      "consumerProperties": {
+        "bootstrap.servers": "{{BOOTSTRAP_SERVERS}}",
+        "security.protocol": "SASL_SSL",
+        "sasl.mechanism": "PLAIN",
+        "sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"{{CC_API_KEY}}\" password=\"{{CC_API_KEY_SECRET}}\";",
+        "auto.offset.reset": "earliest"
+      },
+      "pollTimeout": 100,
+      "startDelay": "PT5S",
+      "period": "PT30S",
+      "useEarliestOffset": true,
+      "useEarliestSequenceNumber": true,
+      "completionTimeout": "PT4H",
+      "lateMessageRejectionPeriod": null,
+      "earlyMessageRejectionPeriod": null,
+      "stream": "SECURITY_LOGS_JSON",
+      "type": "kafka"
+    },
+    "tuningConfig": {
+      "type": "kafka",
+      "maxRowsInMemory": 500000,
+      "maxBytesInMemory": 0,
+      "maxRowsPerSegment": 5000000,
+      "maxTotalRows": null,
+      "intermediatePersistPeriod": "PT10M",
+      "basePersistDirectory": "/tmp/druid-persists",
+      "maxPendingPersists": 0,
+      "indexSpec": {
+        "bitmap": {
+          "type": "roaring",
+          "compressRunOnSerialization": true
+        },
+        "dimensionCompression": "lz4",
+        "metricCompression": "lz4",
+        "longEncoding": "longs"
+      },
+      "buildV9Directly": true,
+      "reportParseExceptions": false,
+      "logParseExceptions": true,
+      "maxParseExceptions": 2000,
+      "maxSavedParseExceptions": 200
+    }
+  }
+}

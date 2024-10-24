@@ -1,0 +1,41 @@
+datasets:
+- dataset_name: Security Logs JSON
+  sqlatable_name: SECURITY_LOGS_JSON
+  database_name: Druid
+  table_name: SECURITY_LOGS_JSON
+  sql: SELECT * FROM SECURITY_LOGS_JSON
+
+- dataset_name: Security Logs Syslog
+  sqlatable_name: SECURITY_LOGS_SYSLOG
+  database_name: Druid
+  table_name: SECURITY_LOGS_SYSLOG
+  sql: SELECT * FROM SECURITY_LOGS_SYSLOG
+
+- dataset_name: Security Logs CEF
+  sqlatable_name: SECURITY_LOGS_CEF
+  database_name: Druid
+  table_name: SECURITY_LOGS_CEF
+  sql: SELECT * FROM SECURITY_LOGS_CEF
+
+- dataset_name: Correlated Security Events
+  sqlatable_name: Correlated_Security_Events
+  database_name: Druid
+  sql: |
+    SELECT
+        s.hostname,
+        s.application AS syslog_application,
+        s.priority AS syslog_priority,
+        j.event_type AS json_event_type,
+        j.status AS json_status,
+        COUNT(*) AS correlated_events
+    FROM "SECURITY_LOGS_SYSLOG" s
+    JOIN "SECURITY_LOGS_JSON" j
+        ON SUBSTR(s.`timestamp`, 1, 16) = SUBSTR(j."timestamp", 1, 16)
+    GROUP BY
+        s.hostname,
+        s.application,
+        s.priority,
+        j.event_type,
+        j.status
+    HAVING COUNT(*) > 1
+    ORDER BY correlated_events DESC

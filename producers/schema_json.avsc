@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "JsonLogRecord",
+  "fields": [
+    {"name": "log_id", "type": "string"},
+    {"name": "timestamp", "type": "string"},
+    {"name": "event_type", "type": "string"},
+    {"name": "status", "type": "string"},
+    {"name": "username", "type": "string"},
+    {"name": "source_ip", "type": "string"},
+    {"name": "destination_ip", "type": "string"},
+    {"name": "details", "type": "string"},
+    {"name": "event_time", "type": "long"}
+  ]
+}

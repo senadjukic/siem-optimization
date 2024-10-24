@@ -1,0 +1,13 @@
+database_name: Apache Druid
+sqlalchemy_uri: druid://druid_system:password2@router:8888/druid/v2/sql
+cache_timeout: null
+expose_in_sqllab: true
+allow_run_async: false
+allow_ctas: false
+allow_cvas: false
+allow_dml: false
+allow_file_upload: false
+extra:
+  allows_virtual_table_explore: true
+uuid: bcc725d7-d215-47a5-aae5-b8893feed696
+version: 1.0.0

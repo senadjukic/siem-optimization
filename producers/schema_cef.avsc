@@ -1,0 +1,29 @@
+{
+  "type": "record",
+  "name": "CefLogRecord",
+  "fields": [
+    {"name": "version", "type": "string"},
+    {"name": "device_vendor", "type": "string"},
+    {"name": "device_product", "type": "string"},
+    {"name": "device_version", "type": "string"},
+    {"name": "signature_id", "type": "string"},
+    {"name": "name", "type": "string"},
+    {"name": "severity", "type": "string"},
+    {
+      "name": "extension",
+      "type": {
+        "type": "record",
+        "name": "Extension",
+        "fields": [
+          {"name": "src", "type": "string"},
+          {"name": "dst", "type": "string"},
+          {"name": "spt", "type": "int"},
+          {"name": "dpt", "type": "int"},
+          {"name": "proto", "type": "string"},
+          {"name": "msg", "type": "string"}
+        ]
+      }
+    },
+    {"name": "event_time", "type": "long"}
+  ]
+}

@@ -1,0 +1,47 @@
+dashboards:
+- dashboard_title: Security Logs Analysis
+  slug: security-logs-analysis
+  position:
+    CHART-explore-1:
+      children: []
+      id: CHART-explore-1
+      meta:
+        chartId: 1
+        height: 50
+        sliceName: Event Frequency by Log Type
+        uuid: 12345678-1234-5678-1234-567812345678
+        width: 12
+    CHART-explore-2:
+      children: []
+      id: CHART-explore-2
+      meta:
+        chartId: 2
+        height: 50
+        sliceName: Top Source IPs
+        uuid: 23456789-2345-6789-2345-678923456789
+        width: 6
+    CHART-explore-3:
+      children: []
+      id: CHART-explore-3
+      meta:
+        chartId: 3
+        height: 50
+        sliceName: Security Incidents Timeline
+        uuid: 34567890-3456-7890-3456-789034567890
+        width: 12
+    DASHBOARD_VERSION_KEY: v2
+  metadata:
+    timed_refresh_immune_slices: []
+    expanded_slices: {}
+    refresh_frequency: 0
+    default_filters: '{}'
+    color_scheme: supersetColors
+    label_colors:
+      '{1}': '#FCC700'
+      '{2}': '#A868B7'
+      '{3}': '#3CCCCB'
+      '{4}': '#FF8C00'
+  slices:
+  - slice_name: Event Frequency by Log Type
+  - slice_name: Top Source IPs
+  - slice_name: Security Incidents Timeline
